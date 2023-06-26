@@ -3,18 +3,26 @@ require('dotenv').config();
 const express = require('express');
 const app = express()
 
+// 4)) rest of the packages
+const morgan = require('morgan')
 
 // 2)) database
 const connectDB = require('./db/connect')
 
-// 3)) middleware
+// 3)) middleware.. then app.use to invoke the invoke the middleware
+const notFoundMiddleware = require('./middleware/not-found');
+const errorHandleMiddleware = require('./middleware/error-handler');
 
+app.use(morgan('tiny'));
 app.use(express.json())
 
 app.get('/',(req,res)=>{
 res.send('e-commerce api')
 })
 
+
+app.use(notFoundMiddleware);
+app.use(errorHandleMiddleware);
 
 // 2)) database
 const port = process.env.PORT || 3500
