@@ -9,12 +9,22 @@ const morgan = require('morgan')
 // 2)) database
 const connectDB = require('./db/connect')
 
+//5))
+const authRouter = require('./routes/authRoutes');
+
 // 3)) middleware.. then app.use to invoke the invoke the middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandleMiddleware = require('./middleware/error-handler');
 
-app.use(morgan('tiny'));
+//this have to go before the routeers
 app.use(express.json())
+
+
+
+app.use('/api/auth',authRouter);
+
+app.use(morgan('tiny'));
+
 
 app.get('/',(req,res)=>{
 res.send('e-commerce api')
@@ -25,7 +35,7 @@ app.use(notFoundMiddleware);
 app.use(errorHandleMiddleware);
 
 // 2)) database
-const port = process.env.PORT || 3500
+const port = process.env.PORT || 9090
 const start = async () =>{
     try{
     await connectDB(process.env.MANGO_URL,console.log('Database connected successfully '));

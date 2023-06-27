@@ -1,34 +1,34 @@
 const mongoose = require('mongoose');
-const validator = require('validator')
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+
+
 const UserSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:[true,'Please provide name'],
-        minlength:3,
-        maxlength:50
-    },
-    email:{
-        type:String,
-        require:[true,'Please provide email'],
-        validate:{
-            //this a built in feature so we do not have put the email validation long code
-            validator: validator.isEmail,
-            message:'Please provide valid email'
-        } 
-    },
-    passWord:{
-        type:String,
-        required:[true,'Please provide passWord'],
-        minlength:6
-        
-    },
-    role:{
-        type:String,
-        enum:['admin','user'],
-        default: 'user'
+  name: {
+    type: String,
+    required: [true, 'Please provide name'],
+    minlength: 3,
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    unique: true,
+    validate:{
+      validator: validator.isEmail,
+      message: 'Please provide valid email'
     }
-})
-
-
+  },
+  password: {
+    type: String,
+    required: [true, 'Please provide password'],
+    minlength: 6,
+  },
+  role:{
+    type:String,
+    enum:['user','admin'],
+    default:'user'
+  }
+});
+  
 
 module.exports = mongoose.model('User', UserSchema);
