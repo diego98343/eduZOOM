@@ -2,7 +2,7 @@ const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const jwt = require('jsonwebtoken');
-const {createJWT} = require('../utils/jwt')
+const {createJWT,attachCookiesToResponse} = require('../utils/jwt')
 
 const register = async (req,res) =>{
 
@@ -20,20 +20,20 @@ const register = async (req,res) =>{
     const role = isFirstAccount ? 'admin' : 'user';
     //-------------------------------------------------------------
 
-    //CREATE NEW USER AND STORE IT TO THE DATABASE
+    //CREATE NEW USER AND STORE IT IN THE DATABASE
     const user = await User.create({name,email,password,role});
 
     // JWT AUTH PART// we must create this tokenUser
     const tokenUser = {name:user.name,userId:user._id,role:user.role}
-    const token =  createJWT({payload:tokenUser})
+    // const token =  createJWT({payload:tokenUser})
     //------------------------------------------------------------
 
     //SETUP COOKIE
-    const oneDay = 1000 *60 *60 *24
-    res.cookie('token',token,{httpOnly:true,expires: new Date(Date.now()+ oneDay)})
+     attachCookiesToResponse({res,user:tokenUser});
     //-------------------------------------------------------------------------------
 
-    res.status(StatusCodes.CREATED).json({user:tokenUser,token});  
+    //RESPONSE THAT SHOWS ON POSTMAN
+    // res.status(StatusCodes.CREATED).json({user:tokenUser,token});  
 }
 
 
