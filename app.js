@@ -4,7 +4,8 @@ const express = require('express');
 const app = express()
 
 // 4)) rest of the packages
-const morgan = require('morgan')
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 // 2)) database
 const connectDB = require('./db/connect')
@@ -16,19 +17,23 @@ const authRouter = require('./routes/authRoutes');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandleMiddleware = require('./middleware/error-handler');
 
+app.use(morgan('tiny'));
 //this have to go before the routeers
 app.use(express.json())
 
+app.use(cookieParser());
 
-
-app.use('/api/auth',authRouter);
-
-app.use(morgan('tiny'));
 
 
 app.get('/',(req,res)=>{
 res.send('e-commerce api')
 })
+
+app.get('/v1/cookie',(req,res)=>{
+    console.log(req.cookies)
+    })
+
+app.use('/api/auth',authRouter);
 
 
 app.use(notFoundMiddleware);
