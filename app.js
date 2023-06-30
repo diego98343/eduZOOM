@@ -18,10 +18,10 @@ const notFoundMiddleware = require('./middleware/not-found');
 const errorHandleMiddleware = require('./middleware/error-handler');
 
 app.use(morgan('tiny'));
-//this have to go before the routeers
+//this have to go before the routers
 app.use(express.json())
 
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 
 

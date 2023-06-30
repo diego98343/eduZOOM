@@ -11,7 +11,7 @@ const register = async (req,res) =>{
     //THIS CHECK IF THERE IS AN EMAIL ALREADY CREATED
     const emailAlreadyExist = await User.findOne({email});
     if(emailAlreadyExist){
-        throw new CustomError.BadRequestError('Email already exist please try another one')
+        throw new CustomError.BadRequestError('Email already exist please try another one');
     }
     //-----------------------------------------------------------------------------------------
 
@@ -38,7 +38,31 @@ const register = async (req,res) =>{
 
 
 const login = async (req,res) =>{
-    res.send('login user');
+
+
+   const {email,password}= req.body;
+
+   if(!email || !password){
+    throw new CustomError.BadRequestError('Please provide email and password');
+   }
+
+    const user = await User.findOne({email});
+    if(!user){
+        throw new CustomError.UnauthenticatedError('Invalid credentials. No user found ');
+    }
+
+    //this is a method we created om user MODEL
+    const isPasswordCorrect = await user.comparePassword(password);
+    if(!isPasswordCorrect){
+        throw new CustomError.UnauthenticatedError('Invalid credentials. Password is not correct');
+    }
+
+
+    const tokenUser = {name:user.name,userId:user._id,role:user.role}
+    attachCookiesToResponse({res,user:tokenUser});
+
+
+    
 }
 
 
