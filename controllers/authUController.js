@@ -46,6 +46,7 @@ const login = async (req,res) =>{
     throw new CustomError.BadRequestError('Please provide email and password');
    }
 
+     //FIND USER BASED ON EMAIL 
     const user = await User.findOne({email});
     if(!user){
         throw new CustomError.UnauthenticatedError('Invalid credentials. No user found ');
@@ -57,17 +58,20 @@ const login = async (req,res) =>{
         throw new CustomError.UnauthenticatedError('Invalid credentials. Password is not correct');
     }
 
-
+    //WE ARE SENDING THE USER INFO WE FOUND AND ATTACH IT TO THE COOKIE
     const tokenUser = {name:user.name,userId:user._id,role:user.role}
     attachCookiesToResponse({res,user:tokenUser});
-
-
-    
 }
 
 
 const logout = async (req,res) =>{
-    res.send('logout user ');
+
+    //REMOVE THE COOKIE FROM WHATEVER USER IS ALREADY IN 
+    res.cookie('token','logout',{
+        httpOnly:true,
+        expires: new Date(Date.now())
+    });
+    res.status(StatusCodes.OK).json({msg:'user logged out'})
 }
 
 
