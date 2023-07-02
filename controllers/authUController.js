@@ -24,7 +24,9 @@ const register = async (req,res) =>{
     const user = await User.create({name,email,password,role});
 
     // JWT AUTH PART// we must create this tokenUser
-    const tokenUser = {name:user.name,userId:user._id,role:user.role}
+    const tokenUser = {name:user.name,
+                       userId:user._id,
+                       role:user.role}
     // const token =  createJWT({payload:tokenUser})
     //------------------------------------------------------------
 
@@ -59,7 +61,10 @@ const login = async (req,res) =>{
     }
 
     //WE ARE SENDING THE USER INFO WE FOUND AND ATTACH IT TO THE COOKIE
-    const tokenUser = {name:user.name,userId:user._id,role:user.role}
+    const tokenUser = {name:user.name,
+                       userId:user._id,
+                       role:user.role}
+                       
     attachCookiesToResponse({res,user:tokenUser});
 }
 
