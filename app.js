@@ -21,7 +21,6 @@ const errorHandleMiddleware = require('./middleware/error-handler');
 app.use(morgan('tiny'));
 //this have to go before the routers
 app.use(express.json())
-
 app.use(cookieParser(process.env.JWT_SECRET));
 
 
@@ -31,7 +30,7 @@ res.send('e-commerce api')
 })
 
 app.get('/v1/cookie',(req,res)=>{
-    console.log(req.cookies)
+    console.log(req.signedCookies)
     })
 
 app.use('/api/auth',authRouter);

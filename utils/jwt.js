@@ -8,9 +8,7 @@ const createJWT = ({payload}) =>{
 }
 
 
-const isTokenValid =({token})=>{
-    jwt.verify(token,process.env.JWT_SECRET)
-}
+const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET);
 
 
 const attachCookiesToResponse = ({res,user})=>{
@@ -22,17 +20,16 @@ const attachCookiesToResponse = ({res,user})=>{
   res.cookie('token',token,{
     httpOnly:true,
     expires: new Date(Date.now()+ oneDay),
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
+    signed:true
   });
 
   res.status(StatusCodes.CREATED).json({user,token});
 }
 
 
-
-module.exports={
-    createJWT,
-    isTokenValid,
-    attachCookiesToResponse
-}
-
+module.exports = {
+  createJWT,
+  isTokenValid,
+  attachCookiesToResponse,
+};
