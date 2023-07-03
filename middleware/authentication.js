@@ -6,11 +6,18 @@ const authenticateUser = async(req,res,next)=>{
    const token = req.signedCookies.token;
   
    if(!token){
-     console.log('token not found')
+     new CustomError.UnauthenticatedError('token not found')
    }
 
-   console.log(`token found ${token}`);
-   next();
+   try{
+    const {name,userId,role} = isTokenValid({ token });
+    req.user = {name,userId,role};
+    console.log(req.user);
+     next();
+   }catch(error){
+    new CustomError.UnauthenticatedError('Authentication invalid')
+   }
+
 }
 
 module.exports={
