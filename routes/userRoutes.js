@@ -12,11 +12,11 @@ const {
 
 router.route('/').get(authenticateUser,authorizePermissions,getAllUsers);
 
-router.route('/showMe').get(showCurrentUser);
+router.route('/showMe').get(authenticateUser,showCurrentUser);
 
 router.route('/updateUser').patch(updateUser);
 
-router.route('/updatePassword').patch(updateUserPassWord);
+router.route('/updatePassword').patch(authenticateUser,updateUserPassWord);
 
 router.route('/:id',).get(getSingleUser);
 
