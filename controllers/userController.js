@@ -6,6 +6,7 @@ const CustomError = require('../errors');
 
 
 const getAllUsers = async(req, res)=>{
+    //REQ.USER COMES FROM THE AUTHENTICATION MIDDLEWARE 
     console.log(req.user)
     //FIND THE USERS BASED ON ROLE
     const users = await User.find({role:'user'}).select('-password');
@@ -42,7 +43,8 @@ const updateUserPassWord = async(req, res)=>{
     }
     
     //GETS USER BY ID
-    const user = await User.findOne({_id:req.params.id}).select('-password');
+    const user = await User.findOne({ _id: req.user.userId });
+    console.log(user);
 
     //MAKES SURE THE NEW PASSWORD IS NOT EQUAL TO THE OLD PASSWORD
     const isPasswordCorrect = await user.comparePassword(oldPassWord);
@@ -57,7 +59,7 @@ const updateUserPassWord = async(req, res)=>{
     await user.save();
 
     //POSTMAN RESPONSE 
-    res.status(StatusCode.OK).json({msg:'Password was updated'});
+    res.status(StatusCodes.OK).json({msg:'Password was updated'});
  
 }
 

@@ -25,12 +25,21 @@ const authenticateUser = async(req,res,next)=>{
 }
 
 //ONCE WE GET THE TOKEN INFO WITH THE USER INFO WE MAKE SURE THE USER IS ADMIN, IF NOT THEN, WILL AN ERROR
-const authorizePermissions = (req,res,next)=>{
-  if(req.user.role !== 'admin'){
-    //WE CREATED this CUSTOM ERROR
-    throw new CustomError.unauthorizedError('Unauthorized to access to this route');
-  }
-  next();
+const authorizePermissions = (...roles)=>{
+  // if(req.user.role !== 'admin'){
+  //   //WE CREATED this CUSTOM ERROR
+  //   throw new CustomError.unauthorizedError('Unauthorized to access to this route');
+  // }
+  // next();
+
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      throw new CustomError.UnauthorizedError(
+        'Unauthorized to access this route'
+      );
+    }
+    next();
+  };
 }
 
 
