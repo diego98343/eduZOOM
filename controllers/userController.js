@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
+const { createTokenUser, attachCookiesToResponse } = require('../utils');
 
 
 
@@ -17,9 +18,10 @@ const getAllUsers = async(req, res)=>{
 
 
 const getSingleUser = async(req, res)=>{
-
+     //WE FIND USE BY ID BASED ON REQ PARAMS 
     const user = await User.findOne({_id:req.params.id}).select('-password');
-
+    
+    //MAKES SURE THERE IS AN USER 
     if(!user){
         throw new CustomError.NotFoundError('User not found');
     }
@@ -65,10 +67,19 @@ const updateUserPassWord = async(req, res)=>{
 
 
 
-
 const updateUser = async(req, res)=>{
 
-    res.send('update user ');
+    const {name,email} = req.body;
+
+    if(!name || !email){
+        throw new CustomError.BadRequestError('name or user are not present');
+    }
+
+    const user = await User.findOneAndUpdate({ _id: req.user.userId},{email,name},{new:true, runValidators:true});
+    
+    const tokenUser = createTokenUser(user);
+
+    attachCookiesToResponse({res,user:tokenUser});
 }
 
 
