@@ -66,7 +66,24 @@ const updateUserPassWord = async(req, res)=>{
 }
 
 
+//UPDATE USER WITH FIND ONE AND UPDATE
+// const updateUser = async(req, res)=>{
 
+//     const {name,email} = req.body;
+
+//     if(!name || !email){
+//         throw new CustomError.BadRequestError('name or user are not present');
+//     }
+
+//     const user = await User.findOneAndUpdate({ _id: req.user.userId},{email,name},{new:true, runValidators:true});
+    
+//     const tokenUser = createTokenUser(user);
+
+//     attachCookiesToResponse({res,user:tokenUser});
+// }
+
+
+//
 const updateUser = async(req, res)=>{
 
     const {name,email} = req.body;
@@ -75,7 +92,12 @@ const updateUser = async(req, res)=>{
         throw new CustomError.BadRequestError('name or user are not present');
     }
 
-    const user = await User.findOneAndUpdate({ _id: req.user.userId},{email,name},{new:true, runValidators:true});
+    const user = await User.findOne({ _id: req.user.userId});
+
+    user.name = name;
+    user.email = email;
+    //everytime we use save we hash the password again
+    await user.save();
     
     const tokenUser = createTokenUser(user);
 

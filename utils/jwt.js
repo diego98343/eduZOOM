@@ -24,7 +24,7 @@ const attachCookiesToResponse = ({res,user})=>{
     signed:true
   });
 
-  res.status(StatusCodes.CREATED).json({user,token});
+  res.status(StatusCodes.OK).json({user,token});
 }
 
 
