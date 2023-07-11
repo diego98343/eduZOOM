@@ -10,7 +10,7 @@ const {
       } = require('../controllers/userController')
 
 
-router.route('/').get(authenticateUser,authorizePermissions('admin'),getAllUsers);
+router.route('/users').get(authenticateUser,authorizePermissions('admin'),getAllUsers);
 
 router.route('/showMe').get(authenticateUser,showCurrentUser);
 
@@ -18,7 +18,7 @@ router.route('/updateUser').patch(authenticateUser,updateUser);
 
 router.route('/updatePassword').patch(authenticateUser,updateUserPassWord);
 
-router.route('/:id',).get(getSingleUser);
+router.route('/:id',).get(authenticateUser,getSingleUser);
 
 
 module.exports = router;

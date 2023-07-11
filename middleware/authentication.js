@@ -2,7 +2,8 @@ const CustomError = require('../errors')
 const { isTokenValid } = require('../utils');
 
 
-//THIS METHOD CHECK IF THERE IS A TOKEN AND GETS THE NAME,USERID,AND ROLE FROM THE COOKIE TOKEN
+//THIS METHOD CHECK IF THERE IS A TOKEN AND GETS THE NAME,USERID,AND ROLE FROM THE COOKIE TOKEN WE ARE CHECKING
+//BASICALLY GETS THE INFORMATION FROM THE EXISTING LOG IN TOKEN 
 const authenticateUser = async(req,res,next)=>{
 
    const token = req.signedCookies.token;

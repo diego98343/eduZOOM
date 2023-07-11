@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { createTokenUser, attachCookiesToResponse } = require('../utils');
+const { createTokenUser, attachCookiesToResponse, checkPermissions } = require('../utils');
 
 
 
@@ -25,6 +25,9 @@ const getSingleUser = async(req, res)=>{
     if(!user){
         throw new CustomError.NotFoundError('User not found');
     }
+    
+    checkPermissions(req.user, user._id);
+    
     res.status(StatusCodes.OK).json({user});
 }
 
@@ -102,6 +105,7 @@ const updateUser = async(req, res)=>{
     const tokenUser = createTokenUser(user);
 
     attachCookiesToResponse({res,user:tokenUser});
+    
 }
 
 
