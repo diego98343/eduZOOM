@@ -2,9 +2,9 @@ const CustomError = require('../errors');
 
 //THIS CHECK USER ROLE
 const checkPermissions = (requestUser, resourceUserId)=>{
-//   console.log(request)
-//   console.log(resourceId);
-//   console.log(typeof resourceId)
+  console.log(requestUser)
+  console.log(resourceUserId);
+  console.log(typeof resourceUserId)
 
 //
  if(requestUser.role === 'admin')return;

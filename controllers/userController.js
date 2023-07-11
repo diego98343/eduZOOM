@@ -17,15 +17,15 @@ const getAllUsers = async(req, res)=>{
 }
 
 
-const getSingleUser = async(req, res)=>{
+const getSingleUser= async(req, res)=>{
      //WE FIND USE BY ID BASED ON REQ PARAMS 
     const user = await User.findOne({_id:req.params.id}).select('-password');
     
-    //MAKES SURE THERE IS AN USER 
+    //MAKES SURE THERE IS AN USER
     if(!user){
         throw new CustomError.NotFoundError('User not found');
     }
-    
+    //REQ.USER RETRIEVE THE USER THAT IN LOGGED IN AND USE_ID RETURN THE ID OF THE USER WE ARE LOOKING FOR 
     checkPermissions(req.user, user._id);
     
     res.status(StatusCodes.OK).json({user});
