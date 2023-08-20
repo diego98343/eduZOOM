@@ -4,6 +4,9 @@ const CustomError = require('../errors');
 const jwt = require('jsonwebtoken');
 const {createJWT,attachCookiesToResponse} = require('../utils/jwt')
 const { createTokenUser } = require('../utils');
+
+
+
 const register = async (req,res) =>{
 
     const {email, name, password} = req.body;

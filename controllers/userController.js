@@ -25,7 +25,9 @@ const getSingleUser= async(req, res)=>{
     if(!user){
         throw new CustomError.NotFoundError('User not found');
     }
+
     //REQ.USER RETRIEVE THE USER THAT IN LOGGED IN AND USE_ID RETURN THE ID OF THE USER WE ARE LOOKING FOR 
+    //THIS FUNCTION COMES FROM UTILS
     checkPermissions(req.user, user._id);
     
     res.status(StatusCodes.OK).json({user});
