@@ -41,7 +41,7 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     },
     featured:{
-        type:boolean,
+        type:Boolean,
         default:false,
     },
     freeShipping:{
@@ -65,3 +65,5 @@ const ProductSchema = new mongoose.Schema({
 },
 {timestamps:true}
 );
+
+module.exports = mongoose.model('Product',ProductSchema);
