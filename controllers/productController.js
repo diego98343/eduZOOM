@@ -15,7 +15,8 @@ const getAllProducts = async(req,res)=>{
     //GETS ALL PRODUCTS IN THE DATABASE
     const products = await Product.find({});
 
-    res.send(StatusCodes.OK).json({products, count: products.length });
+    res.status(StatusCodes.OK).json({products, count: products.length });
+     
 
 }
 
@@ -24,7 +25,17 @@ const updateProduct = async(req,res)=>{s
 }
 
 const getSingleProduct = async(req,res)=>{
-    res.send(' get single product');
+
+    const {id:productId}= req.params;
+    
+    const product = await Product.findOne({_id:req.params.id});
+
+    if(!product){
+        throw new CustomError.NotFoundError('No product was found');
+    }
+
+    res.status(StatusCodes.OK).json({product});
+
 }
 
 const deleteProduct = async(req,res)=>{
