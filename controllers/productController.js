@@ -20,13 +20,11 @@ const getAllProducts = async(req,res)=>{
 
 }
 
-const updateProduct = async(req,res)=>{s
-    res.send(' update product');
-}
-
 const getSingleProduct = async(req,res)=>{
 
     const {id:productId}= req.params;
+
+    console.log(req.params);
     
     const product = await Product.findOne({_id:req.params.id});
 
@@ -38,8 +36,35 @@ const getSingleProduct = async(req,res)=>{
 
 }
 
+const updateProduct = async(req,res)=>{
+
+    const {id: productId} = req.params;
+
+    //MAKES SURE WE GET THE PRODUCT BY ID AND REQ.BODY TAKES THE VALUES 
+    const product = await Product.findOneAndUpdate({_id:req.params.id},req.body,{
+        new: true,
+        runValidators: true,
+    });
+
+    if(!product){
+        throw new CustomError.NotFoundError(`No product was found with id ${productId}`)
+    }
+
+    res.status(StatusCodes.OK).json({product});
+}
+
 const deleteProduct = async(req,res)=>{
-    res.send('delete product');
+
+  const product = await Product.findOne({_id:req.params.id});
+
+  if(!product){
+    throw new CustomError.NotFoundError(`No product was found with id ${productId}`)
+}
+
+await product.remove();
+
+res.status(StatusCodes.OK).json({msg:'product has been removed'});
+
 }
 
 const uploadImage = async(req,res)=>{
