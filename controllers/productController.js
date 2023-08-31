@@ -1,6 +1,7 @@
 const Product = require('../models/Product');
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
+const path = require('path');
 
 //WE CREATE A PRODUCT 
 const createProducts = async(req,res)=>{
@@ -68,7 +69,33 @@ res.status(StatusCodes.OK).json({msg:'product has been removed'});
 }
 
 const uploadImage = async(req,res)=>{
-    res.send('upload image');
+
+    //THIS TAKES THE FILE IMAGE
+    const productImage = req.files.image;
+
+    console.log(productImage)
+    
+
+    //MAKES SURE THE FILE IS AN IMAGE AND NOT ANY OTHER TYPE OF FILE
+    if(!productImage.mimetype.startsWith('image')){
+      throw new CustomError.BadRequestError('please Upload Image or image name is empty');
+    }
+
+    //MAKES SURE THE IMAGE FILE IS NOT TOO HEAVY 
+    const maxSize = 1024 * 1024;
+    if(productImage.size > maxSize){
+        throw new CustomError.BadRequestError('Image size is too large');
+    }
+
+    //IMAGE PATH  WHERE THE  FILE IS GOING TO GET STORED ()
+    const imagePath = path.join(__dirname,'../public/uploads' + `${productImage.name}`);
+
+    //STORE THE IMAGE FILE 
+    await productImage.mv(imagePath);
+
+    
+    res.status(StatusCodes.OK).json({image:`uploads/${productImage.name}, image was uploaded successfully`});
+
 }
 
 
