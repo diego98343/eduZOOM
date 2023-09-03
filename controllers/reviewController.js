@@ -25,16 +25,16 @@ const createReview = async(req,res)=>{
     })
 
     if(alreadySubmitted){
-        throw new CustomError.BadRequestError('user already created a review');
+        throw new CustomError.BadRequestError('user already created a review')
     }
 
-
-    req.body.user = req.body.userId;
+    //user input  || user in the cookie;
+    req.body.user = req.user.userId;
 
     const review = await Review.create(req.body);
     res.status(StatusCodes.CREATED).json({review})
 
-    res.send('create review');
+   
 }
 
 const getAllReview = async(req,res)=>{
