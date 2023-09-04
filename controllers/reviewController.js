@@ -6,6 +6,7 @@ const Review = require('../models/Review');
 const Product = require('../models/Product');
 
 const createReview = async(req,res)=>{
+
     //GETS PRODUCT ID FROM REQ.BODY // ONLY GETS PRODUCT ID FROM THE VALUES WE HAVE ON REQ.BODY
     //whee we create the review there will be a product id ready 
     const {product: productId} = req.body;
@@ -31,14 +32,34 @@ const createReview = async(req,res)=>{
     //user input  || user in the cookie;
     req.body.user = req.user.userId;
 
+
+    //CREATES REVIEW
     const review = await Review.create(req.body);
+
+
     res.status(StatusCodes.CREATED).json({review})
 
    
 }
 
 const getAllReview = async(req,res)=>{
-    res.send('get all reviews');
+
+    const reviews = await Review.find({});
+
+    res.status(StatusCodes.OK).json({reviews,count:reviews.length});
+}
+
+const getSingleReview = async(req,res)=>{
+
+    const {id:reviewId} = req.params;
+
+    const review = await Review.findOne({_id:reviewId});
+
+    if(!review){
+        throw new CustomError.NotFoundError(`no review found with id ${reviewId}`);
+    }
+
+    res.status(StatusCodes.OK).json({review});
 }
 
 const updateReview =async(req,res)=>{
@@ -49,9 +70,6 @@ const deleteReview = async(req,res)=>{
     res.send('delete review');
 }
 
-const getSingleReview = async(req,res)=>{
-    res.send('get a single review');
-}
 
 
 module.exports = {
