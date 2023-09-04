@@ -91,19 +91,23 @@ const updateUserPassWord = async(req, res)=>{
 //
 const updateUser = async(req, res)=>{
 
+    //GETS EMAIL AND NAME FROM REQ.BODY
     const {name,email} = req.body;
 
     if(!name || !email){
         throw new CustomError.BadRequestError('name or user are not present');
     }
 
+    //WE ARE GETTING THE ID FROM THE TOKEN NOT FROM A PARAM 
     const user = await User.findOne({ _id: req.user.userId});
 
     user.name = name;
     user.email = email;
-    //everytime we use save we hash the password again
+
+    //SAVE THE CHANGES 
     await user.save();
     
+    //everytime we use save we hash the password again
     const tokenUser = createTokenUser(user);
 
     attachCookiesToResponse({res,user:tokenUser});

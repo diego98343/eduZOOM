@@ -63,7 +63,33 @@ const getSingleReview = async(req,res)=>{
 }
 
 const updateReview =async(req,res)=>{
-    res.send('update review');
+     
+    const {id:reviewId} = req.params;
+ 
+    //GETS RATING, TITTLE, COMMENT FROM REQ.BODY;
+    const {rating,title,comment}= req.body;
+
+    //FINDS ONE REVIEW BASED ON ID
+    const review = await Review.findOne({_id:reviewId});
+
+
+    if(!review){
+        throw new CustomError.NotFoundError(`no review found to delete with id ${reviewId}`);
+    }
+
+    //IN ORDER FOR THE USER TO DELETE THE COMMENT WE HAVE TO MAKE SURE THE USE FROM THE TOKEN AND REVIEW USER ARE THE SAME ONE
+    checkPermissions(req.user, review.user)
+
+     //SET VALUES FROM REVIEW 
+     review.rating = rating;
+     review.title = title;
+     review.comment = comment;
+ 
+     //
+     await review.save();
+
+     res.status(StatusCodes.OK).json({msg:'Review was removed'});
+
 }
 
 const deleteReview = async(req,res)=>{
@@ -75,6 +101,9 @@ const deleteReview = async(req,res)=>{
     if(!review){
         throw new CustomError.NotFoundError(`no review found to delete with id ${reviewId}`);
     }
+
+    //IN ORDER FOR THE USER TO DELETE THE COMMENT WE HAVE TO MAKE SURE THE USE FROM THE TOKEN AND REVIEW USER ARE THE SAME ONE
+    checkPermissions(req.user, review.user)
 
     await review.remove();
 
