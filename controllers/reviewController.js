@@ -32,7 +32,6 @@ const createReview = async(req,res)=>{
     //user input  || user in the cookie;
     req.body.user = req.user.userId;
 
-
     //CREATES REVIEW
     const review = await Review.create(req.body);
 
@@ -44,7 +43,10 @@ const createReview = async(req,res)=>{
 
 const getAllReview = async(req,res)=>{
 
-    const reviews = await Review.find({});
+    const reviews = await Review.find({}).populate({
+        path:'product',
+        select:'name company price'
+    });
 
     res.status(StatusCodes.OK).json({reviews,count:reviews.length});
 }
@@ -85,7 +87,7 @@ const updateReview =async(req,res)=>{
      review.title = title;
      review.comment = comment;
  
-     //
+     //SAVE ALL CHANGES MADE 
      await review.save();
 
      res.status(StatusCodes.OK).json({msg:'Review was removed'});
@@ -94,8 +96,10 @@ const updateReview =async(req,res)=>{
 
 const deleteReview = async(req,res)=>{
     
+    //GETS IF FROM PARAMS
     const {id:reviewId} = req.params;
 
+    //FINDS A REVIEW BASED ON ID
     const review = await Review.findOne({_id:reviewId});
 
     if(!review){
@@ -105,7 +109,9 @@ const deleteReview = async(req,res)=>{
     //IN ORDER FOR THE USER TO DELETE THE COMMENT WE HAVE TO MAKE SURE THE USE FROM THE TOKEN AND REVIEW USER ARE THE SAME ONE
     checkPermissions(req.user, review.user)
 
+    //REMOVES THE REVIEW
     await review.remove();
+
 
     res.status(StatusCodes.OK).json({review});
 }

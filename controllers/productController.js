@@ -25,9 +25,9 @@ const getSingleProduct = async(req,res)=>{
 
     const {id:productId}= req.params;
 
-    console.log(req.params);
     
-    const product = await Product.findOne({_id:req.params.id});
+     //FIND PRODUCT BASED ON ID                             //POPULATE GETS VALUES FROM REVIEW TO BE DISPLAYED ON A PRODUCT
+    const product = await Product.findOne({_id:productId}).populate('reviews');
 
     if(!product){
         throw new CustomError.NotFoundError('No product was found');

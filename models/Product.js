@@ -62,8 +62,16 @@ const ProductSchema = new mongoose.Schema({
         ref:'User',
         required:true
     },
-},
-{timestamps:true}
+},               //SET OUR MODEL TO ACCEPT MANGOS VIRTUALS
+{timestamps:true,toJSON:{virtuals:true},toObject:{virtuals:true}}
 );
+
+//VIRTUAL TO SHOW PRODUCT ON THE REVIEW
+ProductSchema.virtual('reviews',{
+    ref: 'Review',
+    localField:'_id',
+    foreignField: 'product',
+    justOne: false
+  });
 
 module.exports = mongoose.model('Product',ProductSchema);
