@@ -76,7 +76,7 @@ const updateReview =async(req,res)=>{
 
 
     if(!review){
-        throw new CustomError.NotFoundError(`no review found to delete with id ${reviewId}`);
+        throw new CustomError.NotFoundError(`no review found to update with id ${reviewId}`);
     }
 
     //IN ORDER FOR THE USER TO DELETE THE COMMENT WE HAVE TO MAKE SURE THE USE FROM THE TOKEN AND REVIEW USER ARE THE SAME ONE
@@ -90,7 +90,7 @@ const updateReview =async(req,res)=>{
      //SAVE ALL CHANGES MADE 
      await review.save();
 
-     res.status(StatusCodes.OK).json({msg:'Review was removed'});
+     res.status(StatusCodes.OK).json({review});
 
 }
 
