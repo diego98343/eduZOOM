@@ -70,7 +70,7 @@ const ProductSchema = new mongoose.Schema({
 {timestamps:true,toJSON:{virtuals:true},toObject:{virtuals:true}}
 );
 
-//VIRTUAL TO SHOW PRODUCT ON THE REVIEW
+//VIRTUAL TO SHOW REVIEWS ON A PRODUCT 
 ProductSchema.virtual('reviews',{
     ref: 'Review',
     localField:'_id',
@@ -78,8 +78,8 @@ ProductSchema.virtual('reviews',{
     justOne: false
   });
 
-
   //MAKES SURE THAT REVIEWS GET DELETED WHEN A PRODUCT GETS DELETED
+  //IF WE DO NOT THIS THERE'S GOING TO BE AN ERROR BECAUSE, THERE'RE GOING TO BE REVIEWS LEFT ASSOCIATED WITH THE DELETED PRODUCT.
   ProductSchema.pre('remove',async function(next){
          //REMOVES THE REVIEW WHEN IT MATCHES THE PRODUCT ID
       await this.model('Review').deleteMany({product: this._id});
