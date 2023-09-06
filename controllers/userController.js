@@ -87,7 +87,6 @@ const updateUserPassWord = async(req, res)=>{
 //     attachCookiesToResponse({res,user:tokenUser});
 // }
 
-
 //
 const updateUser = async(req, res)=>{
 
@@ -107,7 +106,7 @@ const updateUser = async(req, res)=>{
     //SAVE THE CHANGES 
     await user.save();
     
-    //everytime we use save we hash the password again
+    //EVERY TIME we use save we hash the password again
     const tokenUser = createTokenUser(user);
 
     attachCookiesToResponse({res,user:tokenUser});
