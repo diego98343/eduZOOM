@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
     default:'user'
   }
 });
-  
+  //HASH THE PASSWORD
 UserSchema.pre('save',async function(){
   //THIS MAKE SURE THAT USER GONNA BE HASH IF THE PASSWORD IS NOT MODIFIED
   if(!this.isModified('password')) return;
@@ -38,6 +38,7 @@ UserSchema.pre('save',async function(){
   this.password = await bcrypt.hash(this.password, salt);
 })
 
+//COMPARE PASSWORD
 UserSchema.methods.comparePassword = async function(candidatePassword){
   const isMatch = await bcrypt.compare(candidatePassword,this.password);
   return isMatch;

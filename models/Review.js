@@ -39,7 +39,7 @@ ReviewSchema.index({product:1,user:1},{unique:true});
 
 
 ReviewSchema.statics.calculateAverageRating = async function(productId){
-//grouping 
+//grouping COMES FROM MANGO DB THIS GROUP THE TOTAL REVIEWS AND GETS THE AMOUNG AND THE AVERAGE RATING
     const result = await this.aggregate([
         {$match:{product: productId}},
         {
@@ -47,16 +47,20 @@ ReviewSchema.statics.calculateAverageRating = async function(productId){
                 _id:null,
                 averageRating: {$avg: '$rating'},
                 numOfReviews: {$sum:1},
-            }
-        }
+            },
+        },
     ]);
     console.log(result);
     try{
-        await this.model('Product').findOneUpdate({_id:productId},{
-            averageRating:Math.ceil(result[0]?.averageRating || 0),
-            numOfReviews: result[0]?.numOfReviews || 0     
-        }
-      );
+        //POPULATE AVERAGE RATING AND NUM OF REVIEWS IN THE PRODUCT MODEL 
+         await this.model('Product').findOneAndUpdate(
+            {_id:productId},
+            {
+                averageRating:Math.ceil(result[0]?.averageRating || 0),
+                numOfReviews:result[0]?.averageRating || 0,
+            }
+         );
+ 
     }catch (error){
       console.log(error);
     }
