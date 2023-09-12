@@ -3,7 +3,7 @@ const router = express.Router();
 const {authenticateUser,authorizePermissions} = require('../middleware/authentication');
 
 const {
-    createOder,
+    createOrder,
     getAllOrders,
     getSingleOrder,
     updateOrder,
@@ -14,9 +14,8 @@ const {
 
 router
    .route('/')
-   .post(authenticateUser,createOder)
+   .post(authenticateUser,createOrder)
    .get(authenticateUser,authorizePermissions('admin'),getAllOrders);
-
 
 
 
