@@ -14,8 +14,9 @@ const connectDB = require('./db/connect')
 //5))
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
-const productRouter = require('./routes/productRoutes')
-const reviewRouter = require('./routes/reviewRoutes')
+const productRouter = require('./routes/productRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
+const orderRouter  = require('./routes/orderRoutes');
 
 // 3)) middleware.. then app.use to invoke the invoke the middleware
 const notFoundMiddleware = require('./middleware/not-found');
@@ -41,6 +42,7 @@ app.use('/api/auth',authRouter);
 app.use('/api/user',userRouter);
 app.use('/api/product',productRouter);
 app.use('/api/review',reviewRouter);
+app.use('/api/order',orderRouter);
 
 
 app.use(notFoundMiddleware);
