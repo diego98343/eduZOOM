@@ -18,7 +18,6 @@ const getAllProducts = async(req,res)=>{
 
     res.status(StatusCodes.OK).json({products, count: products.length });
      
-
 }
 
 const getSingleProduct = async(req,res)=>{

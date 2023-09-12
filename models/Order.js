@@ -14,7 +14,7 @@ const SingleCartItemSchema= mongoose.Schema({
 })
 
 const OrderSchema = mongoose.Schema({
-    
+
     tax:{
       type: Number,
       required: true,
@@ -31,7 +31,7 @@ const OrderSchema = mongoose.Schema({
         type:Number,
         required:true
     },
-    cartItems:[SingleCartItemSchema],
+    orderItems:[SingleCartItemSchema],
     status:{
       type:String,
       enum:['pending','failed','paid','delivered','canceled'],
