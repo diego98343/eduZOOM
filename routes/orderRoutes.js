@@ -18,7 +18,6 @@ router
    .get(authenticateUser,authorizePermissions('admin'),getAllOrders);
 
 
-
 router
     .route('/showAllMyOrders').get(authenticateUser,getCurrentUserOrders);
 

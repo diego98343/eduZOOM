@@ -64,7 +64,6 @@ const createOrder = async (req,res)=>{
      });
    // STRIPE FUNCTION ends
 
-
    //WE HAVE TO MAKES SURE THE VALUES NAMES ARE EQUAL TO THE ORDER MODEL NAMES
    const order = await Order.create({
     orderItems,
@@ -80,8 +79,12 @@ const createOrder = async (req,res)=>{
 }
 
 const getAllOrders = async (req,res)=>{
-   const orders = Order.find({});
+   const orders = await Order.find({});
+   if(!orders){
+    throw new CustomError.NotFoundError('No orders found')
+   }
    res.status(StatusCodes.OK).json({orders});
+   
 }
 
 const getSingleOrder = async (req,res)=>{
@@ -89,7 +92,7 @@ const getSingleOrder = async (req,res)=>{
    const {_id:orderId} = req.params;
    
    //FINDS ORDER BASED ON ID 
-   const order = Order.findOne({_id:orderId});
+   const order = await Order.findOne({_id:orderId});
 
    if(!order){
     throw new CustomError.NotFoundError(`order was not found with id ${orderId}`);
