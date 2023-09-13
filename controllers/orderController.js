@@ -5,7 +5,7 @@ const { checkPermissions } = require('../utils');
 const {StatusCodes} = require('http-status-codes');
 const CustomError = require('../errors');
 
-const fakeStripAPI = async({amount,currency})=>{
+const fakeStripeAPI = async({amount,currency})=>{
     const client_secret = 'someRandomValue'
     return {client_secret,amount}
 }
@@ -17,7 +17,7 @@ const createOrder = async (req,res)=>{
    const {items: cartItems,tax,shippingFee} = req.body;
 
    if(!cartItems || cartItems.length < 1){
-      throw new CustomError.BadRequestError('Not cart items provided')
+      throw new CustomError.BadRequestError('No cart items provided')
    }
 
    
@@ -26,16 +26,16 @@ const createOrder = async (req,res)=>{
    }
 
    let orderItems = [];
-   let subtotal = 0;
+   let subTotal = 0;
 
    //MAKES SURE THERE IS A PRODUCT IN THE CART ITEMS ARRAY
    //we loop to all the cart item and then we get the item to access the product
    //WE GET THE PRODUCT AND PRICE TO CALCULATE THE SUB TOTAL
    for( const item of cartItems){
     //product from cart item
-     const dbProduct = await Product.findOne({_id:item.Product});
+     const dbProduct = await Product.findOne({_id:item.product});
      if(!dbProduct){
-        throw new CustomError.NotFoundError(`product not found with id ${item.product}`);
+        throw new CustomError.NotFoundError(`order was not found with id ${orderId}`);
      };
      //DESTRUCTURE AND GETS EVERY VALUE FROM THE PRODUCT
      const {name, price, image, _id} = dbProduct;
@@ -52,10 +52,10 @@ const createOrder = async (req,res)=>{
      //ADD ITEM TO ORDER array 
      orderItems = [...orderItems,singleOrderItem];
      //subtotal 
-     subtotal += item.amount * price;
+     subTotal += item.amount * price;
    }
    //
-   const total = tax + shippingFee + subtotal
+   const total = tax + shippingFee + subTotal
 
    // STRIPE FUNCTION
      const paymentIntent = await fakeStripeAPI({
@@ -64,10 +64,12 @@ const createOrder = async (req,res)=>{
      });
    // STRIPE FUNCTION ends
 
+
+   //WE HAVE TO MAKES SURE THE VALUES NAMES ARE EQUAL TO THE ORDER MODEL NAMES
    const order = await Order.create({
     orderItems,
     total,
-    subtotal,
+    subTotal,
     tax,
     shippingFee,
     user: req.user.userId,
@@ -99,11 +101,30 @@ const getSingleOrder = async (req,res)=>{
 }
 
 const getCurrentUserOrders = async(req,res)=>{
-    res.send('get current user orders');
+  //find orders based on user id we get from token   
+  const orders = await Order.find({user: req.user.userId});
+  res.status(StatusCodes.OK).json({orders, count:orders.length});
+
 }
 
 const updateOrder = async (req,res)=>{
-    res.send('update order')
+
+    const {_id:orderId} = req.params;
+    const {paymentIntentId}= req.body;
+
+    const order = await Order.findOne({id:orderId});
+
+    if(!order){
+       throw new CustomError.NotFoundError(`no order found with ${orderId}`)
+    }
+
+    checkPermissions(req.user, order.user);
+
+    order.paymentIntentId = paymentIntentId;
+    order.status = 'paid';
+    await order.save();
+
+    res.status(StatusCodes.OK).json({order});
 }
 
 const deleteOrder = async (req,res)=>{
